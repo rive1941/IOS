@@ -36,11 +36,13 @@ class ViewController: UIViewController {
             enter()
         }
         switch operation{
-        case "✕": performOperation {$0 * $1 }
-        case "÷": performOperation {$1 / $0 }
-        case "+": performOperation {$0 + $1 }
-        case "−": performOperation {$1 - $0 }
+        case "✕": performOperation { $0 * $1 }
+        case "÷": performOperation { $1 / $0 }
+        case "+": performOperation { $0 + $1 }
+        case "−": performOperation { $1 - $0 }
         case "√": performOperationOnAValue { sqrt($0) }
+        case "Cos": performOperationOnAValue { cos($0) }
+        case "Sin": performOperationOnAValue { sin($0) }
         default: break
         }
     }
@@ -71,6 +73,14 @@ class ViewController: UIViewController {
         operandStack.append(displayValue)
         println("operand stack = \(operandStack)")
     }
+    
+    
+    @IBAction func clear() {
+        display.text! = "0"
+        operandStack.removeAll()
+        userIsInTheMiddleOfTypingANumber = false
+    }
+    
     var displayValue: Double {
         get{
             return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
