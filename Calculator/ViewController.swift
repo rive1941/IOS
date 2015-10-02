@@ -15,6 +15,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var display: UILabel!
     
     var userIsInTheMiddleOfTypingANumber: Bool = false
+    
+    var brain  = CalculatorBrain()
 
     @IBAction func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle! // var is the same as let except it's a constant
@@ -35,43 +37,22 @@ class ViewController: UIViewController {
         if userIsInTheMiddleOfTypingANumber{
             enter()
         }
-        switch operation{
-        case "✕": performOperation { $0 * $1 }
-        case "÷": performOperation { $1 / $0 }
-        case "+": performOperation { $0 + $1 }
-        case "−": performOperation { $1 - $0 }
-        case "√": performOperationOnAValue { sqrt($0) }
-        case "Cos": performOperationOnAValue { cos($0) }
-        case "Sin": performOperationOnAValue { sin($0) }
-        default: break
+        if let operation = sender.currentTitle {
+            if let result = brain.performOperation(operation){
+                displayValue = result
+            } else {
+                displayValue = 0
+            }
         }
     }
-    
-    func performOperation(operation: (Double, Double) -> Double){
-        if operandStack.count >= 2 {
-            displayValue = operation(operandStack.removeLast(), operandStack.removeLast())
-            enter()
-        }
-    }
-    
-    func performOperationOnAValue(operation: (Double) -> Double){
-        if (operandStack.count >= 1) {
-            displayValue = operation(operandStack.removeLast())
-            enter()
-        }
-    }
-    
-    
-// we can move this function to case"X": so we don't have repeated functions for /, + and -
-//    func multiply(op1: Double, op2: Double) -> Double{
-//        return op1 * op2
-//    }
-    
-    var operandStack: Array<Double> = Array<Double>()
-    @IBAction func enter() {
+        @IBAction func enter() {
         userIsInTheMiddleOfTypingANumber = false;
-        operandStack.append(displayValue)
-        println("operand stack = \(operandStack)")
+            if let result = brain.pushOperand(displayValue){
+                displayValue = result
+            } else {
+                displayValue = 0;
+                // want to set this to nil
+            }
     }
     
     
